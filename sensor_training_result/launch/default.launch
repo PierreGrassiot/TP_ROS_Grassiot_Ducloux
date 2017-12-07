@@ -1,0 +1,35 @@
+<launch>
+
+
+    <node name="mySpeedCmd" pkg="sensor_training_result" type="speed_commander.py" />
+
+
+    <include file = "$(find simple_turtlebot)/launch/simple_turtlebot.launch">
+        <arg name="world" default="$(find sensor_training_result)/scene.world"/>
+        <arg name="xacro_file" default="$(find sensor_training_result)/urdf/simple_turtlebot.urdf.xacro"/>
+    </include>
+
+    <include file = "$(find sensor_training)/launch/control.launch">
+    </include>
+
+    <node pkg="rviz" name="myrviz" type="rviz"  />
+
+    <node name="lidar_linker" pkg="sensor_training" type="camera_lidar.py" >
+        <remap from="/camera/camera_info" to="/rrbot/camera1/camera_info"/>
+        <remap from="/camera/image_raw" to="/rrbot/camera1/image_raw"/>
+        <remap from="/scan" to="/rrbot/laser/scan"/>
+    </node>
+
+
+    <node name="laser_assembler" pkg="laser_assembler" type="point_cloud_assembler" >
+        <param name="fixed_frame" type="string" value="laser_link" />
+    </node>
+
+
+    <!--
+    <node name="my_assemblage" pkg="sensor_training_result" type="asm_caller.py" />
+    -->
+
+
+
+</launch>
